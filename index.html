@@ -90,7 +90,6 @@
             display: flex; flex-direction: column; align-items: center; box-sizing: border-box;
         }
 
-        /* Foto na Polaroid configurada para não cortar (contain) */
         .polaroid-front img { 
             width: 100%; height: 270px; object-fit: contain; 
             border: 1px solid #ddd; background-color: #f4f4f4; border-radius: 2px;
@@ -119,7 +118,6 @@
         .info-title { font-size: 10px; text-transform: uppercase; color: #555; margin-bottom: 2px; font-weight: bold; }
         #score { font-size: 20px; font-weight: 800; }
 
-        /* Botões de Ação no topo */
         .btn-top {
             position: absolute; top: 15px; background: rgba(255,255,255,0.5); border: none; 
             border-radius: 50%; width: 40px; height: 40px; z-index: 20; font-size: 18px; cursor: pointer;
@@ -129,7 +127,6 @@
         .btn-pause { right: 15px; }
         .btn-sound { right: 65px; } 
 
-        /* NOVO: Botão de Acelerar a Queda (Soft Drop) */
         .btn-soft-drop {
             background: rgba(255, 255, 255, 0.7);
             border: 1px solid rgba(255, 255, 255, 0.9);
@@ -181,7 +178,6 @@
 </head>
 <body class="level-1">
 
-    <!-- Tela Inicial -->
     <div id="start-screen" class="overlay-screen" style="display: flex;">
         <h1 style="color: #fff; font-size: 38px; text-shadow: 0 4px 10px rgba(0,0,0,0.1); text-align: center; margin-bottom: 20px;">
             Jardim da Emilly 🌸
@@ -192,7 +188,6 @@
         <button class="btn-start" onclick="iniciarJogo()">Começar Partida</button>
     </div>
 
-    <!-- Tela de Pausa -->
     <div id="pause-screen" class="overlay-screen">
         <div class="overlay-card">
             <h2 id="overlay-title" style="color: #ff6b81; margin-top: 0;">Jogo Pausado ⏸️</h2>
@@ -200,7 +195,6 @@
         </div>
     </div>
 
-    <!-- Tela de Fim de Jogo -->
     <div id="game-over-screen" class="overlay-screen">
         <div class="overlay-card">
             <h2 style="color: #ff6b81; margin-top: 0;">Fim de Jogo! 🥀</h2>
@@ -209,11 +203,9 @@
         </div>
     </div>
 
-    <!-- Botões Superiores -->
     <button class="btn-top btn-sound" id="btn-som" onclick="toggleSom()">🔊</button>
     <button class="btn-top btn-pause" onclick="togglePause()">⏸️</button>
 
-    <!-- Overlay do Polaroid Card -->
     <div id="memory-card-overlay" onclick="fecharCard(event)">
         <div class="polaroid" id="polaroid-obj" onclick="event.stopPropagation(); this.classList.toggle('flipped')">
             <div class="polaroid-inner">
@@ -228,7 +220,6 @@
         </div>
     </div>
 
-    <!-- Cabeçalho Principal -->
     <div class="header">
         <div class="info-box" id="caixa-hold">
             <div class="info-title">Guardada</div>
@@ -246,9 +237,7 @@
         </div>
     </div>
 
-    <!-- Tabuleiro e Galeria Lateral -->
     <div class="game-container">
-        <!-- Coluna Esquerda -->
         <div class="side-gallery" id="gal-left">
             <div class="photo-thumb locked" id="thumb-1" onclick="abrirCard(0)">?</div>
             <div class="photo-thumb locked" id="thumb-3" onclick="abrirCard(2)">?</div>
@@ -258,7 +247,6 @@
 
         <canvas id="tetris" width="240" height="400"></canvas>
 
-        <!-- Coluna Direita -->
         <div class="side-gallery" id="gal-right">
             <div class="photo-thumb locked" id="thumb-2" onclick="abrirCard(1)">?</div>
             <div class="photo-thumb locked" id="thumb-4" onclick="abrirCard(3)">?</div>
@@ -269,7 +257,6 @@
 
     <div id="gesture-hint">👆 Girar | ↔️ Mover | ⏬ Plantar | ⏫ Guardar</div>
 
-    <!-- Botão de Acelerar Queda (Soft Drop) -->
     <button class="btn-soft-drop" id="btn-soft-drop" 
         onmousedown="isSoftDropping = true" 
         onmouseup="isSoftDropping = false" 
@@ -280,7 +267,6 @@
     </button>
 
     <div style="width: 340px; margin-top: 5px; max-width: 95vw;">
-        <!-- Se você colocou o link do YouTube, cole-o aqui, ou deixe o do Spotify -->
         <iframe style="border-radius:12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1);" src="https://open.spotify.com/embed/playlist/3b6HX5idzVBbaZNVXCu8xZ?utm_source=generator" width="100%" height="80" frameBorder="0" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"></iframe>
     </div>
 
@@ -343,8 +329,6 @@
         const LOCK_DELAY = 400; 
         let ghostY = 0;
         let animationId = null;
-
-        // Variavel do Soft Drop (Botão de acelerar a peça)
         let isSoftDropping = false;
 
         let recorde = 0;
@@ -354,13 +338,12 @@
         } catch (e) { }
 
         /* =========================================
-           SISTEMA DE ÁUDIO MELHORADO (MOBILE FIX)
+           SISTEMA DE ÁUDIO (MUITO MAIS ALTO)
         ========================================= */
         let audioCtx;
         let somAtivado = true;
         let audioUnlocked = false;
 
-        // Inicia/Destrava o som de forma segura no Mobile
         function initAudio() {
             try {
                 if (!audioCtx) {
@@ -371,26 +354,24 @@
                     audioCtx.resume();
                 }
                 
-                // Hack para liberar o som no celular (Safari/Chrome) no 1º clique
                 if (!audioUnlocked) {
                     const osc = audioCtx.createOscillator();
                     const gain = audioCtx.createGain();
-                    gain.gain.value = 0; // Toca mudo
+                    gain.gain.value = 0; 
                     osc.connect(gain);
                     gain.connect(audioCtx.destination);
                     osc.start(audioCtx.currentTime);
                     osc.stop(audioCtx.currentTime + 0.001);
                     audioUnlocked = true;
                 }
-            } catch(e) { console.error("Erro ao iniciar áudio:", e); }
+            } catch(e) {}
         }
 
-        // Adiciona destravador de áudio no primeiro toque na tela para o mobile liberar
         document.body.addEventListener('touchstart', initAudio, { once: true });
         document.body.addEventListener('click', initAudio, { once: true });
 
         function toggleSom() {
-            initAudio(); // Tenta destravar caso seja o primeiro clique
+            initAudio(); 
             somAtivado = !somAtivado;
             const btn = document.getElementById('btn-som');
             btn.innerText = somAtivado ? '🔊' : '🔇';
@@ -407,52 +388,53 @@
                 
                 const now = audioCtx.currentTime;
                 
+                // Volume dos sons absurdamente aumentados para o celular (de 0.05 para até 0.5)
                 if (tipo === 'move') {
                     osc.type = 'sine'; osc.frequency.setValueAtTime(300, now); 
-                    gain.gain.setValueAtTime(0.05, now); 
+                    gain.gain.setValueAtTime(0.3, now); 
                     osc.start(now); osc.stop(now + 0.05);
                 } 
                 else if (tipo === 'rotate') {
                     osc.type = 'sine'; osc.frequency.setValueAtTime(450, now); 
-                    gain.gain.setValueAtTime(0.05, now); 
+                    gain.gain.setValueAtTime(0.3, now); 
                     osc.start(now); osc.stop(now + 0.05);
                 }
                 else if (tipo === 'drop') {
                     osc.type = 'triangle'; osc.frequency.setValueAtTime(150, now); 
                     osc.frequency.exponentialRampToValueAtTime(50, now + 0.1);
-                    gain.gain.setValueAtTime(0.1, now); 
+                    gain.gain.setValueAtTime(0.6, now); 
                     gain.gain.exponentialRampToValueAtTime(0.01, now + 0.1);
                     osc.start(now); osc.stop(now + 0.1);
                 } 
                 else if (tipo === 'hold') {
                     osc.type = 'sine'; osc.frequency.setValueAtTime(200, now); 
                     osc.frequency.linearRampToValueAtTime(400, now + 0.1);
-                    gain.gain.setValueAtTime(0.05, now); 
+                    gain.gain.setValueAtTime(0.3, now); 
                     osc.start(now); osc.stop(now + 0.1);
                 }
                 else if (tipo === 'clear') {
                     osc.type = 'square'; osc.frequency.setValueAtTime(600, now); 
                     osc.frequency.linearRampToValueAtTime(800, now + 0.1);
-                    gain.gain.setValueAtTime(0.05, now); 
+                    gain.gain.setValueAtTime(0.4, now); 
                     osc.start(now); osc.stop(now + 0.1);
                 }
                 else if (tipo === 'combo') {
                     osc.type = 'square'; osc.frequency.setValueAtTime(800, now); 
                     osc.frequency.linearRampToValueAtTime(1200, now + 0.2);
-                    gain.gain.setValueAtTime(0.05, now); 
+                    gain.gain.setValueAtTime(0.4, now); 
                     osc.start(now); osc.stop(now + 0.2);
                 }
                 else if (tipo === 'levelUp') {
                     osc.type = 'sine'; osc.frequency.setValueAtTime(400, now); 
                     osc.frequency.setValueAtTime(600, now + 0.1);
                     osc.frequency.setValueAtTime(800, now + 0.2);
-                    gain.gain.setValueAtTime(0.1, now); 
+                    gain.gain.setValueAtTime(0.5, now); 
                     osc.start(now); osc.stop(now + 0.3);
                 }
                 else if (tipo === 'gameover') {
                     osc.type = 'sawtooth'; osc.frequency.setValueAtTime(300, now); 
                     osc.frequency.exponentialRampToValueAtTime(50, now + 0.5);
-                    gain.gain.setValueAtTime(0.1, now); 
+                    gain.gain.setValueAtTime(0.5, now); 
                     gain.gain.linearRampToValueAtTime(0.01, now + 0.5);
                     osc.start(now); osc.stop(now + 0.5);
                 }
@@ -531,7 +513,7 @@
             player.pos.x = Math.floor(12 / 2) - Math.floor(player.matrix[0].length / 2);
             
             canSwap = true;
-            isSoftDropping = false; // Garante que a peça não nasça correndo
+            isSoftDropping = false;
             updateSidePanels();
             updateGhost();
 
@@ -677,7 +659,7 @@
         }
 
         /* =========================================
-           RENDERIZAÇÃO
+           RENDERIZAÇÃO VISUAL (COM FLORES MELHORADAS)
         ========================================= */
         function drawMatrix(ctx, matrix, offset, isGhost = false) {
             if (!matrix) return;
@@ -692,7 +674,14 @@
                             ctx.fillStyle = bgColors[val]; ctx.fillRect(x + offset.x + gap, y + offset.y + gap, 0.9, 0.9);
                             ctx.fillStyle = 'rgba(255,255,255,0.4)'; ctx.fillRect(x + offset.x + gap, y + offset.y + gap, 0.9, 0.15); ctx.fillRect(x + offset.x + gap, y + offset.y + gap, 0.15, 0.9);
                             ctx.fillStyle = 'rgba(0,0,0,0.2)'; ctx.fillRect(x + offset.x + gap, y + offset.y + 0.9 - 0.1 + gap, 0.9, 0.15); ctx.fillRect(x + offset.x + 0.9 - 0.1 + gap, y + offset.y + gap, 0.15, 0.9);
-                            if (plants[val]) { ctx.font = '0.6px Arial'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText(plants[val], x + offset.x + 0.5, y + offset.y + 0.55); }
+                            
+                            // Adicionando as flores nos blocos de forma clara para o celular ler o Emoji!
+                            if (plants[val]) { 
+                                ctx.font = '0.8px "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji", sans-serif'; 
+                                ctx.textAlign = 'center'; 
+                                ctx.textBaseline = 'middle'; 
+                                ctx.fillText(plants[val], x + offset.x + 0.5, y + offset.y + 0.55); 
+                            }
                         }
                     }
                 });
@@ -741,22 +730,15 @@
             
             const deltaTime = time - lastTime; lastTime = time; dropCounter += deltaTime;
             
-            // Controle de velocidade com o Soft Drop!
             let interval = Math.max(150, 1000 - (level * 100));
-            if (isSoftDropping) {
-                interval = 30; // ⚡ Acelera a peça se estiver segurando o botão
-            }
+            if (isSoftDropping) interval = 30; 
             
             if (dropCounter > interval) {
                 player.pos.y++;
                 if (collide(arena, player)) {
                     player.pos.y--; 
-                    if(isSoftDropping) {
-                        lockDelayTime = LOCK_DELAY; // Cola mais rápido se estiver acelerando
-                    }
-                } else {
-                    lockDelayTime = 0; 
-                }
+                    if(isSoftDropping) lockDelayTime = LOCK_DELAY; 
+                } else lockDelayTime = 0; 
                 dropCounter = 0;
             }
             
@@ -890,3 +872,6 @@
     </script>
 </body>
 </html>
+
+
+```
