@@ -146,7 +146,7 @@
             box-shadow: 0 4px 10px rgba(0,0,0,0.15);
             cursor: pointer;
             transition: all 0.2s;
-            margin-top: 5px; /* Espaço para o tabuleiro */
+            margin-top: 15px; /* Espaço para o tabuleiro */
             display: flex;
             align-items: center;
             justify-content: center;
@@ -690,8 +690,53 @@
         ========================================= */
         function update(time = 0) {
             if (!jogoRodando || jogoPausado) {
-                lastTime = time; animationId = requestAnimationFrame(update); return;
+                lastTime = time;
+                requestAnimationFrame(update);
+                return;
             }
+
+            const deltaTime = time - lastTime;
+            lastTime = time;
+            dropCounter += deltaTime;
+            
+            let newLevel = Math.floor(player.score / 50) + 1;
+            
+            if (newLevel !== currentLevel) {
+                currentLevel = newLevel;
+                updateLevelVisuals();
+            }
+
+            // SOFT DROP (Aceleração contínua):
+            // Se isSoftDropping for true, acelera muito a queda!
+            let dropInterval = Math.max(150, 1100 - (currentLevel * 100));
+            if (isSoftDropping) {
+                dropInterval = 30; // Desce voando!
+            }
+
+            if (dropCounter > dropInterval) {
+                player.pos.y++;
+                if (collide(arena, player)) {
+                    player.pos.y--;
+                } else {
+                    lockDelayTime = 0; 
+                }
+                dropCounter = 0;
+            }
+
+            player.pos.y++;
+            if (collide(arena, player)) {
+                player.pos.y--;
+                lockDelayTime += deltaTime;
+                if (lockDelayTime >= LOCK_DELAY) {
+                    processarColagemNoChao();
+                }
+            } else {
+                player.pos.y--;
+            }
+            
+            draw();
+            requestAnimationFrame(update);
+        }
             
             const deltaTime = time - lastTime; lastTime = time; dropCounter += deltaTime;
             
@@ -797,55 +842,90 @@
         }
 
         /* =========================================
-           GERENCIADORES DE EVENTOS
+           9. CONTROLES MOBILE E TECLADO
         ========================================= */
-        document.addEventListener('keydown', e => {
-            if (e.keyCode === 27 || e.keyCode === 80) togglePause();
+        let touchStartX = 0; let touchStartY = 0; 
+        let touchStartTime = 0; let touchMovedHorizontal = false;
+        let isSoftDropping = false; // NOVA VARIÁVEL: Controla se o dedo está puxando pra baixo
+
+        document.addEventListener('keydown', event => {
+            if (event.keyCode === 27 || event.keyCode === 80) togglePause();
             if (!jogoRodando || jogoPausado) return;
             
-            if (e.keyCode === 37) playerMove(-1);
-            else if (e.keyCode === 39) playerMove(1);
-            else if (e.keyCode === 40) { iniciarAceleracao(); } // Seta para baixo acelera
-            else if (e.keyCode === 38) playerRotate();
-            else if (e.keyCode === 32) { e.preventDefault(); playerHardDrop(); }
-            else if (e.keyCode === 67 || e.keyCode === 16) playerHold();
+            if (event.keyCode === 37) playerMove(-1); 
+            else if (event.keyCode === 39) playerMove(1); 
+            else if (event.keyCode === 40) { 
+                isSoftDropping = true; // Ativa aceleração ao segurar seta pra baixo
+            } 
+            else if (event.keyCode === 38) playerRotate(); 
+            else if (event.keyCode === 32) { event.preventDefault(); playerHardDrop(); } 
+            else if (event.keyCode === 67 || event.keyCode === 16) playerHold(); 
         });
 
-        // Quando solta a tecla para baixo, a peça volta a cair normal
-        document.addEventListener('keyup', e => {
-            if (e.keyCode === 40) { pararAceleracao(); }
+        // Desativa a aceleração quando soltar a tecla
+        document.addEventListener('keyup', event => {
+            if (event.keyCode === 40) {
+                isSoftDropping = false;
+            }
         });
 
-        let touchX, touchY, touchStartTime, horizontalMove;
-        
-        document.addEventListener('touchstart', e => {
-            const alvo = e.target;
-            if (alvo.closest('.side-gallery') || alvo.closest('button') || alvo.closest('.polaroid') || alvo.closest('iframe')) return;
-            touchX = e.touches[0].clientX; touchY = e.touches[0].clientY; touchStartTime = Date.now(); horizontalMove = false;
-        }, { passive: false });
+        document.addEventListener('touchstart', (e) => {
+            if (!jogoRodando || jogoPausado || (e.target.tagName && e.target.tagName === 'IFRAME') || e.target.tagName === 'BUTTON') return;
+            touchStartX = e.touches[0].clientX; 
+            touchStartY = e.touches[0].clientY;
+            touchStartTime = Date.now(); 
+            touchMovedHorizontal = false;
+            isSoftDropping = false; // Reset
+        }, {passive: false});
 
-        document.addEventListener('touchmove', e => {
-            const alvo = e.target;
-            if (!jogoRodando || jogoPausado || alvo.closest('.side-gallery') || alvo.closest('button') || alvo.closest('.polaroid') || alvo.closest('iframe')) return;
-            e.preventDefault();
-            const dx = e.touches[0].clientX - touchX; const dy = e.touches[0].clientY - touchY;
+        document.addEventListener('touchmove', (e) => {
+            if (!jogoRodando || jogoPausado || (e.target.tagName && e.target.tagName === 'IFRAME') || e.target.tagName === 'BUTTON') return;
+            e.preventDefault(); 
+            
+            let currentX = e.touches[0].clientX;
+            let currentY = e.touches[0].clientY;
+            let dx = currentX - touchStartX;
+            let dy = currentY - touchStartY;
+
+            // Arraste Horizontal
             if (Math.abs(dx) > 25 && Math.abs(dx) > Math.abs(dy)) {
-                playerMove(dx > 0 ? 1 : -1); touchX = e.touches[0].clientX; touchY = e.touches[0].clientY; horizontalMove = true;
+                touchMovedHorizontal = true;
+                playerMove(dx > 0 ? 1 : -1);
+                touchStartX = currentX; 
+                touchStartY = currentY;
+                isSoftDropping = false; // Se moveu pros lados, cancela a descida
             }
-        }, { passive: false });
+            // Arraste Lento/Contínuo para Baixo (Soft Drop)
+            else if (dy > 30 && Math.abs(dx) < 20) {
+                isSoftDropping = true;
+                touchStartY = currentY; // Reseta Y para ler movimento contínuo
+            }
+        }, {passive: false});
 
-        document.addEventListener('touchend', e => {
-            const alvo = e.target;
-            if (!jogoRodando || jogoPausado || alvo.closest('.side-gallery') || alvo.closest('button') || alvo.closest('.polaroid') || alvo.closest('iframe')) return;
-            const dy = e.changedTouches[0].clientY - touchY; const dx = e.changedTouches[0].clientX - touchX; const dt = Date.now() - touchStartTime;
-            if (!horizontalMove) {
-                if (dt < 250 && Math.abs(dx) < 10 && Math.abs(dy) < 10) playerRotate();
-                else if (dy > 50) playerHardDrop();
-                else if (dy < -50) playerHold();
+        document.addEventListener('touchend', (e) => {
+            if (!jogoRodando || jogoPausado || (e.target.tagName && e.target.tagName === 'IFRAME') || e.target.tagName === 'BUTTON') return;
+            
+            let dx = e.changedTouches[0].clientX - touchStartX;
+            let dy = e.changedTouches[0].clientY - touchStartY;
+            let dt = Date.now() - touchStartTime;
+            
+            isSoftDropping = false; // Para de acelerar assim que tira o dedo
+
+            if (!touchMovedHorizontal) {
+                if (dt < 250 && Math.abs(dx) < 10 && Math.abs(dy) < 10) {
+                    playerRotate();
+                } 
+                // Se foi um puxão rápido e forte pra baixo
+                else if (dy > 50 && dt < 300) {
+                    playerHardDrop();
+                } 
+                // Se foi pra cima
+                else if (dy < -50) {
+                    playerHold();
+                }
             }
         });
 
-        renderThumbs();
     </script>
 </body>
 </html>
