@@ -33,13 +33,8 @@
             animation: gradientMove 15s ease infinite;
         }
 
-        body.level-3 { 
-            background: linear-gradient(-45deg, #fdfbfb, #ebedee, #e0c3fc, #a1c4fd); 
-        }
-        
-        body.level-5 { 
-            background: linear-gradient(-45deg, #ff9a9e, #fecfef, #ffdde1, #ff9a9e); 
-        }
+        body.level-3 { background: linear-gradient(-45deg, #fdfbfb, #ebedee, #e0c3fc, #a1c4fd); }
+        body.level-5 { background: linear-gradient(-45deg, #ff9a9e, #fecfef, #ffdde1, #ff9a9e); }
 
         @keyframes gradientMove { 
             0% { background-position: 0% 50%; } 
@@ -51,268 +46,110 @@
            2. LAYOUT: GALERIA LATERAL (FOTOS)
         ========================================= */
         .game-container { 
-            display: flex; 
-            align-items: center; 
-            justify-content: center; 
-            width: 100%; 
-            gap: 15px; 
-            max-width: 100vw; 
+            display: flex; align-items: center; justify-content: center; 
+            width: 100%; gap: 15px; max-width: 100vw; 
         }
 
-        .side-gallery { 
-            display: flex; 
-            flex-direction: column; 
-            gap: 10px; 
-            width: 60px; 
-        }
+        .side-gallery { display: flex; flex-direction: column; gap: 10px; width: 60px; }
 
         .photo-thumb {
-            width: 55px; 
-            height: 55px; 
-            background: rgba(255,255,255,0.3); 
-            border-radius: 12px;
-            border: 2px solid rgba(255,255,255,0.5); 
-            backdrop-filter: blur(5px);
-            display: flex; 
-            align-items: center; 
-            justify-content: center; 
-            font-size: 20px;
-            cursor: pointer; 
-            overflow: hidden; 
-            position: relative; 
-            transition: all 0.3s;
+            width: 55px; height: 55px; background: rgba(255,255,255,0.3); border-radius: 12px;
+            border: 2px solid rgba(255,255,255,0.5); backdrop-filter: blur(5px);
+            display: flex; align-items: center; justify-content: center; font-size: 20px;
+            cursor: pointer; overflow: hidden; position: relative; transition: all 0.3s;
         }
 
-        .photo-thumb.locked { 
-            opacity: 0.5; 
-            filter: grayscale(1); 
-        }
-
+        .photo-thumb.locked { opacity: 0.5; filter: grayscale(1); }
         .photo-thumb.unlocked { 
-            opacity: 1; 
-            filter: grayscale(0); 
-            border-color: #ffb6c1; 
+            opacity: 1; filter: grayscale(0); border-color: #ffb6c1; 
             box-shadow: 0 4px 10px rgba(255,182,193,0.4); 
         }
-
-        .photo-thumb img { 
-            width: 100%; 
-            height: 100%; 
-            object-fit: cover; 
-        }
+        .photo-thumb img { width: 100%; height: 100%; object-fit: cover; }
 
         /* =========================================
            3. POLAROID CARD (POPUP DE MEMÓRIA)
         ========================================= */
         #memory-card-overlay {
-            display: none; 
-            position: absolute; 
-            top: 0; left: 0; 
-            width: 100%; 
-            height: 100%;
-            background: rgba(0,0,0,0.5); 
-            backdrop-filter: blur(10px); 
-            -webkit-backdrop-filter: blur(10px);
-            z-index: 100; 
-            align-items: center; 
-            justify-content: center;
+            display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.5); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+            z-index: 100; align-items: center; justify-content: center;
         }
 
-        .polaroid {
-            width: 300px; 
-            perspective: 1000px; 
-            cursor: pointer;
-        }
+        .polaroid { width: 300px; perspective: 1000px; cursor: pointer; }
 
         .polaroid-inner {
-            position: relative; 
-            width: 100%; 
-            height: 380px; 
-            text-align: center;
-            transition: transform 0.8s; 
-            transform-style: preserve-3d;
+            position: relative; width: 100%; height: 380px; text-align: center;
+            transition: transform 0.8s; transform-style: preserve-3d;
         }
 
-        .polaroid.flipped .polaroid-inner { 
-            transform: rotateY(180deg); 
-        }
+        .polaroid.flipped .polaroid-inner { transform: rotateY(180deg); }
 
         .polaroid-front, .polaroid-back {
-            position: absolute; 
-            width: 100%; 
-            height: 100%; 
-            backface-visibility: hidden;
-            background: #fff; 
-            padding: 15px; 
-            border-radius: 4px; 
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-            display: flex; 
-            flex-direction: column; 
-            align-items: center;
-            box-sizing: border-box;
+            position: absolute; width: 100%; height: 100%; backface-visibility: hidden;
+            background: #fff; padding: 15px; border-radius: 4px; box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            display: flex; flex-direction: column; align-items: center; box-sizing: border-box;
         }
 
-        .polaroid-front img { 
-            width: 100%; 
-            height: 270px; 
-            object-fit: cover; 
-            border: 1px solid #ddd; 
-        }
+        .polaroid-front img { width: 100%; height: 270px; object-fit: cover; border: 1px solid #ddd; }
+        .polaroid-front::after { content: "Clique para virar ❤️"; font-size: 12px; color: #999; margin-top: 20px; }
 
-        .polaroid-front::after { 
-            content: "Clique para virar ❤️"; 
-            font-size: 12px; 
-            color: #999; 
-            margin-top: 20px; 
-        }
-
-        .polaroid-back {
-            transform: rotateY(180deg); 
-            justify-content: center; 
-            padding: 30px;
-            background: #fdfaf0; 
-        }
-
-        .polaroid-back p { 
-            font-family: 'Dancing Script', cursive, serif; 
-            font-size: 22px; 
-            line-height: 1.5; 
-            color: #444; 
-        }
+        .polaroid-back { transform: rotateY(180deg); justify-content: center; padding: 30px; background: #fdfaf0; }
+        .polaroid-back p { font-family: 'Dancing Script', cursive, serif; font-size: 22px; line-height: 1.5; color: #444; }
 
         /* =========================================
            4. ELEMENTOS DO JOGO E TABULEIRO
         ========================================= */
         canvas#tetris { 
-            background: rgba(30, 40, 45, 0.85); 
-            border-radius: 16px; 
-            border: 2px solid rgba(255, 255, 255, 0.1);
-            max-height: 48vh; 
-            width: auto; 
-            aspect-ratio: 3 / 5;
+            background: rgba(30, 40, 45, 0.85); border-radius: 16px; border: 2px solid rgba(255, 255, 255, 0.1);
+            max-height: 48vh; width: auto; aspect-ratio: 3 / 5;
         }
 
-        .shake-anim { 
-            animation: shake 0.2s both; 
-        }
+        .shake-anim { animation: shake 0.2s both; }
+        @keyframes shake { 0% { transform: translate(1px, 1px); } 50% { transform: translate(-2px, 2px); } 100% { transform: translate(0, 0); } }
 
-        @keyframes shake { 
-            0% { transform: translate(1px, 1px); } 
-            50% { transform: translate(-2px, 2px); } 
-            100% { transform: translate(0, 0); } 
-        }
-
-        .header { 
-            display: flex; 
-            justify-content: space-between; 
-            width: 340px; 
-            max-width: 95vw; 
-            gap: 8px; 
-            margin-top: 10px; 
-        }
-
+        .header { display: flex; justify-content: space-between; width: 340px; max-width: 95vw; gap: 8px; margin-top: 10px; }
         .info-box { 
-            background: rgba(255,255,255,0.5); 
-            backdrop-filter: blur(10px); 
-            padding: 8px; 
-            border-radius: 15px; 
-            text-align: center; 
-            flex: 1; 
-            border: 1px solid rgba(255,255,255,0.6); 
+            background: rgba(255,255,255,0.5); backdrop-filter: blur(10px); padding: 8px; 
+            border-radius: 15px; text-align: center; flex: 1; border: 1px solid rgba(255,255,255,0.6); 
         }
+        .info-title { font-size: 10px; text-transform: uppercase; color: #555; margin-bottom: 2px; font-weight: bold; }
+        #score { font-size: 20px; font-weight: 800; }
 
-        .info-title { 
-            font-size: 10px; 
-            text-transform: uppercase; 
-            color: #555; 
-            margin-bottom: 2px; 
-            font-weight: bold;
+        /* Botões de Ação no topo */
+        .btn-top {
+            position: absolute; top: 15px; background: rgba(255,255,255,0.5); border: none; 
+            border-radius: 50%; width: 40px; height: 40px; z-index: 20; font-size: 18px; cursor: pointer;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1); transition: transform 0.2s;
         }
-
-        #score { 
-            font-size: 20px; 
-            font-weight: 800; 
-        }
-
-        .btn-pause { 
-            position: absolute; 
-            top: 15px; 
-            right: 15px; 
-            background: rgba(255,255,255,0.5); 
-            border: none; 
-            border-radius: 50%; 
-            width: 40px; 
-            height: 40px; 
-            z-index: 20; 
-            font-size: 18px; 
-            cursor: pointer;
-        }
+        .btn-top:active { transform: scale(0.9); }
+        .btn-pause { right: 15px; }
+        .btn-sound { right: 65px; } /* Ao lado do botão de pausa */
         
         .overlay-screen { 
-            display: none; 
-            position: absolute; 
-            width: 100%; 
-            height: 100%; 
-            background: rgba(255,255,255,0.4); 
-            backdrop-filter: blur(15px); 
-            z-index: 50; 
-            flex-direction: column; 
-            align-items: center; 
-            justify-content: center; 
-            text-align: center;
+            display: none; position: absolute; width: 100%; height: 100%; background: rgba(255,255,255,0.4); 
+            backdrop-filter: blur(15px); z-index: 50; flex-direction: column; align-items: center; 
+            justify-content: center; text-align: center;
         }
-
         .overlay-card { 
-            background: rgba(255,255,255,0.9); 
-            padding: 30px; 
-            border-radius: 20px; 
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1); 
-            text-align: center; 
-            width: 80%; 
-            max-width: 320px; 
+            background: rgba(255,255,255,0.9); padding: 30px; border-radius: 20px; 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1); text-align: center; width: 80%; max-width: 320px; 
         }
-
         .btn-start, .btn-action { 
-            background: #ff9a9e; 
-            color: #fff; 
-            border: none; 
-            padding: 12px 30px; 
-            border-radius: 30px; 
-            font-weight: 700; 
-            margin-top: 20px; 
-            cursor: pointer; 
-            font-size: 16px;
+            background: #ff9a9e; color: #fff; border: none; padding: 12px 30px; 
+            border-radius: 30px; font-weight: 700; margin-top: 20px; cursor: pointer; font-size: 16px;
         }
         
         #gesture-hint { 
-            background: rgba(255, 255, 255, 0.4); 
-            backdrop-filter: blur(10px); 
-            padding: 8px 20px; 
-            border-radius: 20px; 
-            font-size: 12px; 
-            color: #444; 
-            font-weight: 500; 
-            border: 1px solid rgba(255, 255, 255, 0.5); 
-            text-align: center; 
-            margin-bottom: 5px;
+            background: rgba(255, 255, 255, 0.4); backdrop-filter: blur(10px); padding: 8px 20px; 
+            border-radius: 20px; font-size: 12px; color: #444; font-weight: 500; 
+            border: 1px solid rgba(255, 255, 255, 0.5); text-align: center; margin-bottom: 5px;
         }
 
-        /* Efeitos visuais do Combo flutuante */
         #combo-text {
-            position: absolute; 
-            top: 45%; left: 50%; 
-            transform: translate(-50%, -50%);
-            font-size: 32px; 
-            font-weight: 900; 
-            color: #fff;
-            text-shadow: 0px 4px 15px rgba(0,0,0,0.3);
-            pointer-events: none; 
-            opacity: 0; 
-            z-index: 15;
-            text-align: center;
-            width: 100%;
+            position: absolute; top: 45%; left: 50%; transform: translate(-50%, -50%);
+            font-size: 32px; font-weight: 900; color: #fff; text-shadow: 0px 4px 15px rgba(0,0,0,0.3);
+            pointer-events: none; opacity: 0; z-index: 15; text-align: center; width: 100%;
         }
-
         .combo-anim { animation: floatUp 1.5s ease-out forwards; }
         @keyframes floatUp {
             0% { opacity: 0; transform: translate(-50%, -30%) scale(0.8); }
@@ -324,20 +161,13 @@
 </head>
 <body class="level-1">
 
-    <!-- =========================================
-         TELAS DE MENUS E AVISOS 
-    ========================================= -->
-    
     <!-- Tela Inicial -->
     <div id="start-screen" class="overlay-screen" style="display: flex;">
         <h1 style="color: #fff; font-size: 38px; text-shadow: 0 4px 10px rgba(0,0,0,0.1); text-align: center; margin-bottom: 20px;">
             Jardim da Emilly 🌸
         </h1>
         <p style="color: #444; font-weight: 500; font-size: 14px; text-align: center; margin-bottom: 20px;">
-            Arraste p/ lados: Mover<br>
-            Toque rápido: Girar<br>
-            Deslize p/ baixo: Plantar<br>
-            Deslize p/ cima: Guardar
+            Arraste p/ lados: Mover<br>Toque rápido: Girar<br>Deslize p/ baixo: Plantar<br>Deslize p/ cima: Guardar
         </p>
         <button class="btn-start" onclick="iniciarJogo()">Começar Partida</button>
     </div>
@@ -359,9 +189,11 @@
         </div>
     </div>
 
-    <button class="btn-pause" onclick="togglePause()">⏸️</button>
+    <!-- Botões Superiores -->
+    <button class="btn-top btn-sound" id="btn-som" onclick="toggleSom()">🔊</button>
+    <button class="btn-top btn-pause" onclick="togglePause()">⏸️</button>
 
-    <!-- Overlay do Polaroid Card (Fotos Expandidas) -->
+    <!-- Overlay do Polaroid Card -->
     <div id="memory-card-overlay" onclick="fecharCard(event)">
         <div class="polaroid" id="polaroid-obj" onclick="event.stopPropagation(); this.classList.toggle('flipped')">
             <div class="polaroid-inner">
@@ -376,14 +208,10 @@
         </div>
     </div>
 
-    <!-- =========================================
-         INTERFACE PRINCIPAL DO JOGO 
-    ========================================= -->
-
-    <!-- Cabeçalho -->
+    <!-- Cabeçalho Principal -->
     <div class="header">
         <div class="info-box" id="caixa-hold">
-            <div class="info-title">Hold</div>
+            <div class="info-title">Guardada</div>
             <canvas id="hold-canvas" width="50" height="50"></canvas>
         </div>
         <div class="info-box" style="flex: 1.5;">
@@ -393,15 +221,14 @@
             <div style="font-size: 11px; color: #ff6b81; font-weight: 800; margin-top: 5px;">Nível <span id="level">1</span></div>
         </div>
         <div class="info-box">
-            <div class="info-title">Next</div>
+            <div class="info-title">Próxima</div>
             <canvas id="next-canvas" width="50" height="50"></canvas>
         </div>
     </div>
 
     <!-- Tabuleiro e Galeria Lateral -->
     <div class="game-container">
-        
-        <!-- Coluna de Fotos Esquerda -->
+        <!-- Coluna Esquerda -->
         <div class="side-gallery" id="gal-left">
             <div class="photo-thumb locked" id="thumb-1" onclick="abrirCard(0)">?</div>
             <div class="photo-thumb locked" id="thumb-3" onclick="abrirCard(2)">?</div>
@@ -411,7 +238,7 @@
 
         <canvas id="tetris" width="240" height="400"></canvas>
 
-        <!-- Coluna de Fotos Direita -->
+        <!-- Coluna Direita -->
         <div class="side-gallery" id="gal-right">
             <div class="photo-thumb locked" id="thumb-2" onclick="abrirCard(1)">?</div>
             <div class="photo-thumb locked" id="thumb-4" onclick="abrirCard(3)">?</div>
@@ -420,19 +247,18 @@
         </div>
     </div>
 
-    <!-- Dicas e Spotify -->
     <div id="gesture-hint">👆 Girar | ↔️ Mover | ⏬ Plantar | ⏫ Guardar</div>
 
     <div style="width: 340px; margin-top: 5px; max-width: 95vw;">
+        <!-- Se você colocou o link do YouTube, cole-o aqui, ou deixe o do Spotify -->
         <iframe style="border-radius:12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1);" src="https://open.spotify.com/embed/playlist/3b6HX5idzVBbaZNVXCu8xZ?utm_source=generator" width="100%" height="80" frameBorder="0" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"></iframe>
     </div>
 
     <div id="combo-text"></div>
 
-    <!-- SCRIPT PRINCIPAL E LÓGICA DO JOGO -->
     <script>
         /* =========================================
-           DADOS DAS MEMÓRIAS (COM A PASTA FOTOS)
+           DADOS E MEMÓRIAS
         ========================================= */
         const memorias = [
             { pts: 50, img: "Fotos/imagem_1.jfif", txt: "A sua pontuação já está no seu tamanho!!!!!!!" },
@@ -445,16 +271,11 @@
             { pts: 1600, img: "Fotos/imagem_8.jfif", txt: "Isso não pode ser uma lembrança, mas uma visão do futuro. Você segurando a betinha e sendo a melhor mãe do mundo. Feliz dias das mães." }
         ];
 
-        // Carrega progresso do LocalStorage de forma blindada
         let unlockedMemories = [];
         try {
             const saved = localStorage.getItem('memoria_jardim');
-            if (saved) {
-                unlockedMemories = JSON.parse(saved);
-            }
-        } catch (e) {
-            console.error("Modo anônimo ou sandbox bloqueou o acesso ao LocalStorage", e);
-        }
+            if (saved) unlockedMemories = JSON.parse(saved);
+        } catch (e) { }
 
         /* =========================================
            CONFIGURAÇÕES DO MOTOR (TETRIS)
@@ -474,7 +295,6 @@
         const plants = [null, '🌻', '🪻', '🌼', '🌹', '🌷', '🌺', '🌸'];
         const bgColors = [null, '#FFE082', '#9FA8DA', '#EEEEEE', '#EF9A9A', '#F48FB1', '#FFAB91', '#F8BBD0'];
 
-        // Estado do Jogo (Variáveis Globais)
         let jogoRodando = false;
         let jogoPausado = false;
         let score = 0;
@@ -482,11 +302,7 @@
         let arena = createMatrix(12, 20);
         let particulas = [];
         
-        let player = { 
-            pos: { x: 0, y: 0 }, 
-            matrix: null 
-        };
-        
+        let player = { pos: { x: 0, y: 0 }, matrix: null };
         let nextPeca = null;
         let holdPeca = null;
         let canSwap = true;
@@ -495,17 +311,62 @@
         let lastTime = 0;
         let lockDelayTime = 0; 
         const LOCK_DELAY = 400; 
-        
         let ghostY = 0;
         let animationId = null;
 
-        // Recuperar e exibir o Recorde Salvo (Blindado)
         let recorde = 0;
         try {
             recorde = localStorage.getItem('tetrisRecordeEmilly') || 0;
             document.getElementById('high-score').innerText = recorde;
-        } catch (e) {
-            console.error("Modo anônimo bloqueou o acesso ao LocalStorage", e);
+        } catch (e) { }
+
+        /* =========================================
+           SISTEMA DE ÁUDIO (COM BOTÃO MUTE)
+        ========================================= */
+        let audioCtx;
+        let somAtivado = true;
+
+        function initAudio() {
+            if (!audioCtx) {
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            }
+            if (audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+        }
+
+        function toggleSom() {
+            somAtivado = !somAtivado;
+            const btn = document.getElementById('btn-som');
+            btn.innerText = somAtivado ? '🔊' : '🔇';
+        }
+
+        function tocarSom(tipo) {
+            if (!somAtivado || !audioCtx) return;
+            try {
+                if (audioCtx.state === 'suspended') audioCtx.resume();
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.connect(gain); gain.connect(audioCtx.destination);
+                
+                if (tipo === 'move') {
+                    osc.type = 'sine'; osc.frequency.setValueAtTime(400, audioCtx.currentTime); 
+                    gain.gain.setValueAtTime(0.05, audioCtx.currentTime); 
+                    osc.start(); osc.stop(audioCtx.currentTime + 0.05);
+                } else if (tipo === 'drop') {
+                    osc.type = 'triangle'; osc.frequency.setValueAtTime(150, audioCtx.currentTime); 
+                    gain.gain.setValueAtTime(0.1, audioCtx.currentTime); 
+                    osc.start(); osc.stop(audioCtx.currentTime + 0.1);
+                } else if (tipo === 'combo') {
+                    osc.type = 'sine'; osc.frequency.setValueAtTime(800, audioCtx.currentTime); 
+                    gain.gain.setValueAtTime(0.1, audioCtx.currentTime); 
+                    osc.start(); osc.stop(audioCtx.currentTime + 0.3);
+                }
+            } catch(e) {}
+        }
+
+        function vibrar(padrao) { 
+            try { if (navigator.vibrate) navigator.vibrate(padrao); } catch(e) {}
         }
 
         /* =========================================
@@ -513,28 +374,18 @@
         ========================================= */
         function createMatrix(w, h) {
             const matrix = [];
-            for (let i = 0; i < h; i++) {
-                matrix.push(new Array(w).fill(0));
-            }
+            for (let i = 0; i < h; i++) matrix.push(new Array(w).fill(0));
             return matrix;
         }
 
         function createPiece(type) {
-            if (type === 'I') {
-                return [[0, 1, 0, 0], [0, 1, 0, 0], [0, 1, 0, 0], [0, 1, 0, 0]];
-            } else if (type === 'L') {
-                return [[0, 2, 0], [0, 2, 0], [0, 2, 2]];
-            } else if (type === 'J') {
-                return [[0, 3, 0], [0, 3, 0], [3, 3, 0]];
-            } else if (type === 'O') {
-                return [[4, 4], [4, 4]];
-            } else if (type === 'Z') {
-                return [[5, 5, 0], [0, 5, 5], [0, 0, 0]];
-            } else if (type === 'S') {
-                return [[0, 6, 6], [6, 6, 0], [0, 0, 0]];
-            } else if (type === 'T') {
-                return [[0, 7, 0], [7, 7, 7], [0, 0, 0]];
-            }
+            if (type === 'I') return [[0, 1, 0, 0], [0, 1, 0, 0], [0, 1, 0, 0], [0, 1, 0, 0]];
+            else if (type === 'L') return [[0, 2, 0], [0, 2, 0], [0, 2, 2]];
+            else if (type === 'J') return [[0, 3, 0], [0, 3, 0], [3, 3, 0]];
+            else if (type === 'O') return [[4, 4], [4, 4]];
+            else if (type === 'Z') return [[5, 5, 0], [0, 5, 5], [0, 0, 0]];
+            else if (type === 'S') return [[0, 6, 6], [6, 6, 0], [0, 0, 0]];
+            else if (type === 'T') return [[0, 7, 0], [7, 7, 7], [0, 0, 0]];
         }
 
         function rotate(matrix, dir) {
@@ -543,27 +394,19 @@
                     [matrix[x][y], matrix[y][x]] = [matrix[y][x], matrix[x][y]];
                 }
             }
-            if (dir > 0) {
-                matrix.forEach(row => row.reverse());
-            } else {
-                matrix.reverse();
-            }
+            if (dir > 0) matrix.forEach(row => row.reverse());
+            else matrix.reverse();
         }
 
         function collide(arena, playerObj) {
             const m = playerObj.matrix;
             const o = playerObj.pos;
-            
             if (!m) return false;
-            
             for (let y = 0; y < m.length; ++y) {
                 for (let x = 0; x < m[y].length; ++x) {
                     if (m[y][x] !== 0) {
-                        let targetY = y + o.y;
-                        let targetX = x + o.x;
-                        
-                        if (targetY >= 20 || targetX < 0 || targetX >= 12) return true;
-                        if (targetY >= 0 && arena[targetY][targetX] !== 0) return true;
+                        let tY = y + o.y, tX = x + o.x;
+                        if (tY >= 20 || tX < 0 || tX >= 12 || (tY >= 0 && arena[tY][tX] !== 0)) return true;
                     }
                 }
             }
@@ -574,32 +417,22 @@
             playerObj.matrix.forEach((row, y) => {
                 row.forEach((value, x) => {
                     if (value !== 0) {
-                        let targetY = y + playerObj.pos.y;
-                        let targetX = x + playerObj.pos.x;
-                        if (targetY >= 0 && targetY < 20 && targetX >= 0 && targetX < 12) {
-                            arena[targetY][targetX] = value;
-                        }
+                        let tY = y + playerObj.pos.y, tX = x + playerObj.pos.x;
+                        if (tY >= 0 && tY < 20 && tX >= 0 && tX < 12) arena[tY][tX] = value;
                     }
                 });
             });
         }
 
         /* =========================================
-           LÓGICA PRINCIPAL DO JOGADOR E AÇÕES
+           LÓGICA PRINCIPAL DO JOGADOR
         ========================================= */
         function resetPlayer() {
             const pieces = 'ILJOTSZ';
-            
-            // Garante que a Next Peça existe
-            if (!nextPeca) {
-                nextPeca = createPiece(pieces[Math.floor(Math.random() * pieces.length)]);
-            }
-            
-            // Atribui a próxima peça ao jogador e gera uma nova
+            if (!nextPeca) nextPeca = createPiece(pieces[Math.floor(Math.random() * pieces.length)]);
             player.matrix = nextPeca;
             nextPeca = createPiece(pieces[Math.floor(Math.random() * pieces.length)]);
             
-            // Posiciona a peça no topo ao centro
             player.pos.y = 0;
             player.pos.x = Math.floor(12 / 2) - Math.floor(player.matrix[0].length / 2);
             
@@ -607,7 +440,6 @@
             updateSidePanels();
             updateGhost();
 
-            // CONDIÇÃO DE GAME OVER: Nasceu colidindo
             if (collide(arena, player)) {
                 jogoRodando = false; 
                 jogoPausado = true;
@@ -636,54 +468,37 @@
         }
 
         function arenaSweep() {
-            let rowCount = 1;
-            let linesCleared = 0;
-            let yLinhas = [];
-            
+            let rowCount = 1; let linesCleared = 0; let yLinhas = [];
             for (let y = arena.length - 1; y >= 0; y--) {
                 let isFull = true;
                 for (let x = 0; x < arena[y].length; x++) {
                     if (arena[y][x] === 0) { isFull = false; break; }
                 }
-                
                 if (isFull) {
                     const row = arena.splice(y, 1)[0].fill(0);
                     arena.unshift(row);
                     yLinhas.push(y);
-                    y++; // Reprocessa a mesma linha por conta do deslocamento
+                    y++; 
                     score += rowCount * 10;
                     rowCount *= 2;
                     linesCleared++;
                 }
             }
-            
             if (linesCleared > 0) {
-                // Partículas Mágicas!
                 let multiplier = linesCleared === 1 ? 1 : linesCleared === 2 ? 1.5 : linesCleared === 3 ? 2 : 3;
                 for(let x = 0; x < 12; x++) {
                     for(let i = 0; i < (4 * multiplier); i++) {
                         particulas.push({
-                            x: x + Math.random(), 
-                            y: yLinhas[0] + Math.random(),
-                            vx: (Math.random() - 0.5) * (0.6 * multiplier), 
-                            vy: (Math.random() - 1) * (0.6 * multiplier),
-                            vida: 1.0, 
-                            cor: bgColors[Math.floor(Math.random() * (bgColors.length - 1)) + 1]
+                            x: x + Math.random(), y: yLinhas[0] + Math.random(),
+                            vx: (Math.random() - 0.5) * (0.6 * multiplier), vy: (Math.random() - 1) * (0.6 * multiplier),
+                            vida: 1.0, cor: bgColors[Math.floor(Math.random() * (bgColors.length - 1)) + 1]
                         });
                     }
                 }
-
-                // Textos de Combo
-                if (linesCleared === 1) { 
-                    tocarSom('move'); vibrar([50]); 
-                } else if (linesCleared === 2) { 
-                    vibrar([50, 50, 100]); mostrarCombo("Arranjo Lindo! 🌸"); 
-                } else if (linesCleared === 3) { 
-                    vibrar([50, 100, 150]); mostrarCombo("Buquê Perfeito! 💐"); 
-                } else if (linesCleared >= 4) { 
-                    vibrar([100, 100, 200]); mostrarCombo("Jardim Extraordinário! 🌺"); 
-                }
-
+                if (linesCleared === 1) { tocarSom('move'); vibrar([50]); } 
+                else if (linesCleared === 2) { vibrar([50, 50, 100]); mostrarCombo("Arranjo Lindo! 🌸"); } 
+                else if (linesCleared === 3) { vibrar([50, 100, 150]); mostrarCombo("Buquê Perfeito! 💐"); } 
+                else if (linesCleared >= 4) { vibrar([100, 100, 200]); mostrarCombo("Jardim Extraordinário! 🌺"); }
                 updateScore();
             }
         }
@@ -699,12 +514,9 @@
 
         function updateScore() {
             document.getElementById('score').innerText = score;
-            
             if (score > recorde) {
                 recorde = score;
-                try {
-                    localStorage.setItem('tetrisRecordeEmilly', recorde);
-                } catch(e) {}
+                try { localStorage.setItem('tetrisRecordeEmilly', recorde); } catch(e) {}
                 document.getElementById('high-score').innerText = recorde;
             }
             
@@ -712,30 +524,23 @@
             if (newLevel !== level) {
                 level = newLevel;
                 document.getElementById('level').innerText = level;
-                
                 document.body.className = ''; 
                 if (level >= 5) document.body.classList.add('level-5');
                 else if (level >= 3) document.body.classList.add('level-3');
                 else document.body.classList.add('level-1');
             }
-            
             checkMemories();
         }
 
         /* =========================================
-           SISTEMA DE MEMÓRIAS E RECOMPENSAS
+           SISTEMA DE MEMÓRIAS
         ========================================= */
         function checkMemories() {
             memorias.forEach((memoria, index) => {
                 if (score >= memoria.pts && !unlockedMemories.includes(index)) {
                     unlockedMemories.push(index);
-                    try {
-                        localStorage.setItem('memoria_jardim', JSON.stringify(unlockedMemories));
-                    } catch(e) {}
-                    
-                    setTimeout(() => {
-                        abrirCard(index);
-                    }, 300); 
+                    try { localStorage.setItem('memoria_jardim', JSON.stringify(unlockedMemories)); } catch(e) {}
+                    setTimeout(() => { abrirCard(index); }, 300); 
                 }
             });
             renderThumbs();
@@ -745,9 +550,7 @@
             memorias.forEach((memoria, index) => {
                 const thumb = document.getElementById(`thumb-${index + 1}`);
                 if (unlockedMemories.includes(index)) {
-                    thumb.classList.remove('locked');
-                    thumb.classList.add('unlocked');
-                    
+                    thumb.classList.remove('locked'); thumb.classList.add('unlocked');
                     const fallbackSVG = "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI1MCIgaGVpZ2h0PSI1MCIgdmlld0JveD0iMCAwIDUwIDUwIj48cmVjdCB3aWR0aD0iNTAiIGhlaWdodD0iNTAiIGZpbGw9IiNlZWVlZWUiLz48dGV4dCB4PSIyNSIgeT0iMzAiIGZvbnQtc2l6ZT0iMjAiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZpbGw9IiM5OTkiPjwvdGV4dD48L3N2Zz4=";
                     thumb.innerHTML = `<img src="${memoria.img}" alt="Memória" onerror="this.src='${fallbackSVG}'">`;
                 }
@@ -756,21 +559,14 @@
 
         function abrirCard(index) {
             if (!unlockedMemories.includes(index)) return;
-            
             jogoPausado = true;
-            
             const overlay = document.getElementById('memory-card-overlay');
             const img = document.getElementById('card-img');
             const txt = document.getElementById('card-text');
-            const polaroidObj = document.getElementById('polaroid-obj');
+            document.getElementById('polaroid-obj').classList.remove('flipped');
             
-            polaroidObj.classList.remove('flipped');
             img.src = memorias[index].img;
-            
-            img.onerror = function() {
-                this.src = "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI1MCIgaGVpZ2h0PSI1MCIgdmlld0JveD0iMCAwIDUwIDUwIj48cmVjdCB3aWR0aD0iNTAiIGhlaWdodD0iNTAiIGZpbGw9IiNlZWVlZWUiLz48dGV4dCB4PSIyNSIgeT0iMzAiIGZvbnQtc2l6ZT0iMjAiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZpbGw9IiM5OTkiPjwvdGV4dD48L3N2Zz4=";
-            };
-            
+            img.onerror = function() { this.src = "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI1MCIgaGVpZ2h0PSI1MCIgdmlld0JveD0iMCAwIDUwIDUwIj48cmVjdCB3aWR0aD0iNTAiIGhlaWdodD0iNTAiIGZpbGw9IiNlZWVlZWUiLz48dGV4dCB4PSIyNSIgeT0iMzAiIGZvbnQtc2l6ZT0iMjAiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZpbGw9IiM5OTkiPjwvdGV4dD48L3N2Zz4="; };
             txt.innerText = memorias[index].txt;
             overlay.style.display = 'flex';
         }
@@ -778,49 +574,28 @@
         function fecharCard(e) {
             if (e) e.stopPropagation();
             document.getElementById('memory-card-overlay').style.display = 'none';
-            
-            const startScreenVis = document.getElementById('start-screen').style.display;
-            const gameOverVis = document.getElementById('game-over-screen').style.display;
-            
-            if (startScreenVis === 'none' && gameOverVis === 'none') {
+            if (document.getElementById('start-screen').style.display === 'none' && document.getElementById('game-over-screen').style.display === 'none') {
                 jogoPausado = false;
             }
         }
 
         /* =========================================
-           FUNÇÕES DE RENDERIZAÇÃO E ANIMAÇÃO
+           RENDERIZAÇÃO
         ========================================= */
         function drawMatrix(ctx, matrix, offset, isGhost = false) {
             if (!matrix) return;
-            
             matrix.forEach((row, y) => {
                 row.forEach((val, x) => {
                     if (val !== 0) {
                         const gap = 0.05;
-                        
                         if (isGhost) {
-                            ctx.fillStyle = bgColors[val];
-                            ctx.globalAlpha = 0.2;
-                            ctx.fillRect(x + offset.x + gap, y + offset.y + gap, 0.9, 0.9);
-                            ctx.globalAlpha = 1.0;
+                            ctx.fillStyle = bgColors[val]; ctx.globalAlpha = 0.2;
+                            ctx.fillRect(x + offset.x + gap, y + offset.y + gap, 0.9, 0.9); ctx.globalAlpha = 1.0;
                         } else {
-                            ctx.fillStyle = bgColors[val];
-                            ctx.fillRect(x + offset.x + gap, y + offset.y + gap, 0.9, 0.9);
-                            
-                            ctx.fillStyle = 'rgba(255,255,255,0.4)'; 
-                            ctx.fillRect(x + offset.x + gap, y + offset.y + gap, 0.9, 0.15); 
-                            ctx.fillRect(x + offset.x + gap, y + offset.y + gap, 0.15, 0.9);
-                            
-                            ctx.fillStyle = 'rgba(0,0,0,0.2)'; 
-                            ctx.fillRect(x + offset.x + gap, y + offset.y + 0.9 - 0.1 + gap, 0.9, 0.15); 
-                            ctx.fillRect(x + offset.x + 0.9 - 0.1 + gap, y + offset.y + gap, 0.15, 0.9);
-
-                            if (plants[val]) {
-                                ctx.font = '0.6px Arial';
-                                ctx.textAlign = 'center';
-                                ctx.textBaseline = 'middle';
-                                ctx.fillText(plants[val], x + offset.x + 0.5, y + offset.y + 0.55);
-                            }
+                            ctx.fillStyle = bgColors[val]; ctx.fillRect(x + offset.x + gap, y + offset.y + gap, 0.9, 0.9);
+                            ctx.fillStyle = 'rgba(255,255,255,0.4)'; ctx.fillRect(x + offset.x + gap, y + offset.y + gap, 0.9, 0.15); ctx.fillRect(x + offset.x + gap, y + offset.y + gap, 0.15, 0.9);
+                            ctx.fillStyle = 'rgba(0,0,0,0.2)'; ctx.fillRect(x + offset.x + gap, y + offset.y + 0.9 - 0.1 + gap, 0.9, 0.15); ctx.fillRect(x + offset.x + 0.9 - 0.1 + gap, y + offset.y + gap, 0.15, 0.9);
+                            if (plants[val]) { ctx.font = '0.6px Arial'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText(plants[val], x + offset.x + 0.5, y + offset.y + 0.55); }
                         }
                     }
                 });
@@ -829,47 +604,34 @@
 
         function draw() {
             context.clearRect(0, 0, 12, 20);
-            
-            context.strokeStyle = 'rgba(255,255,255,0.05)'; 
-            context.lineWidth = 0.05;
+            context.strokeStyle = 'rgba(255,255,255,0.05)'; context.lineWidth = 0.05;
             for (let x = 0; x <= 12; x++) { context.beginPath(); context.moveTo(x, 0); context.lineTo(x, 20); context.stroke(); }
             for (let y = 0; y <= 20; y++) { context.beginPath(); context.moveTo(0, y); context.lineTo(12, y); context.stroke(); }
 
             drawMatrix(context, arena, { x: 0, y: 0 });
-            
             if (player.matrix) {
                 drawMatrix(context, player.matrix, { x: player.pos.x, y: ghostY }, true);
                 drawMatrix(context, player.matrix, player.pos);
             }
 
-            // Renderiza Partículas Especiais do Jogo
             for (let i = particulas.length - 1; i >= 0; i--) {
-                let p = particulas[i];
-                p.x += p.vx; 
-                p.y += p.vy; 
-                p.vy += 0.02; // Gravidade
-                p.vida -= 0.03;
-                
-                if (p.vida <= 0) {
-                    particulas.splice(i, 1);
-                } else {
-                    context.fillStyle = p.cor; 
-                    context.globalAlpha = p.vida;
-                    context.fillRect(p.x, p.y, 0.4, 0.4); 
-                    context.globalAlpha = 1.0;
-                }
+                let p = particulas[i]; p.x += p.vx; p.y += p.vy; p.vy += 0.02; p.vida -= 0.03;
+                if (p.vida <= 0) particulas.splice(i, 1);
+                else { context.fillStyle = p.cor; context.globalAlpha = p.vida; context.fillRect(p.x, p.y, 0.4, 0.4); context.globalAlpha = 1.0; }
             }
         }
 
         function updateSidePanels() {
             nextContext.clearRect(0, 0, 4, 4);
             if (nextPeca) drawMatrix(nextContext, nextPeca, { x: (4 - nextPeca[0].length) / 2, y: (4 - nextPeca.length) / 2 });
-            
             holdContext.clearRect(0, 0, 4, 4);
             if (holdPeca) drawMatrix(holdContext, holdPeca, { x: (4 - holdPeca[0].length) / 2, y: (4 - holdPeca.length) / 2 });
             
-            document.getElementById('caixa-hold').style.opacity = canSwap ? "1" : "0.4";
-            document.getElementById('caixa-hold').style.filter = canSwap ? "grayscale(0%)" : "grayscale(80%)";
+            const caixaHold = document.getElementById('caixa-hold');
+            if (caixaHold) {
+                caixaHold.style.opacity = canSwap ? "1" : "0.4";
+                caixaHold.style.filter = canSwap ? "grayscale(0%)" : "grayscale(80%)";
+            }
         }
 
         /* =========================================
@@ -877,156 +639,94 @@
         ========================================= */
         function update(time = 0) {
             if (!jogoRodando || jogoPausado) {
-                lastTime = time;
-                animationId = requestAnimationFrame(update);
-                return;
+                lastTime = time; animationId = requestAnimationFrame(update); return;
             }
             
-            const deltaTime = time - lastTime;
-            lastTime = time;
-            dropCounter += deltaTime;
-
+            const deltaTime = time - lastTime; lastTime = time; dropCounter += deltaTime;
             const interval = Math.max(150, 1000 - (level * 100));
             
-            // Passo 1: Queda natural
             if (dropCounter > interval) {
                 player.pos.y++;
-                if (collide(arena, player)) {
-                    player.pos.y--;
-                } else {
-                    lockDelayTime = 0; 
-                }
+                if (collide(arena, player)) player.pos.y--; else lockDelayTime = 0; 
                 dropCounter = 0;
             }
             
-            // Passo 2: Coyote Time
             player.pos.y++;
             if (collide(arena, player)) {
-                player.pos.y--;
-                lockDelayTime += deltaTime;
-                if (lockDelayTime >= LOCK_DELAY) {
-                    processarColagemNoChao();
-                }
-            } else {
-                player.pos.y--;
-            }
+                player.pos.y--; lockDelayTime += deltaTime;
+                if (lockDelayTime >= LOCK_DELAY) processarColagemNoChao();
+            } else player.pos.y--;
             
             draw();
             animationId = requestAnimationFrame(update);
         }
 
         /* =========================================
-           AÇÕES DO JOGADOR
+           AÇÕES DO JOGADOR E MENUS
         ========================================= */
         function playerMove(dir) {
             player.pos.x += dir;
-            if (collide(arena, player)) {
-                player.pos.x -= dir;
-            } else {
-                lockDelayTime = 0; 
-                updateGhost();
-            }
+            if (collide(arena, player)) player.pos.x -= dir; else { lockDelayTime = 0; updateGhost(); }
         }
 
         function playerRotate() {
-            const pos = player.pos.x;
-            let offset = 1;
-            
-            rotate(player.matrix, 1);
-            
-            let failsafe = 0;
+            const pos = player.pos.x; let offset = 1; rotate(player.matrix, 1); let failsafe = 0;
             while (collide(arena, player) && failsafe < 5) {
-                player.pos.x += offset;
-                offset = -(offset + (offset > 0 ? 1 : -1));
-                
-                if (offset > player.matrix[0].length) {
-                    rotate(player.matrix, -1);
-                    player.pos.x = pos;
-                    return;
-                }
+                player.pos.x += offset; offset = -(offset + (offset > 0 ? 1 : -1));
+                if (offset > player.matrix[0].length) { rotate(player.matrix, -1); player.pos.x = pos; return; }
                 failsafe++;
             }
-            lockDelayTime = 0;
-            updateGhost();
+            lockDelayTime = 0; updateGhost();
         }
 
         function playerHardDrop() {
-            player.pos.y = ghostY;
-            processarColagemNoChao();
-            
+            player.pos.y = ghostY; processarColagemNoChao();
             const canvasEl = document.getElementById('tetris');
-            canvasEl.classList.remove('shake-anim');
-            void canvasEl.offsetWidth; 
-            canvasEl.classList.add('shake-anim');
+            canvasEl.classList.remove('shake-anim'); void canvasEl.offsetWidth; canvasEl.classList.add('shake-anim');
         }
 
         function playerHold() {
             if (!canSwap) return;
-            
-            // O BUG DO CONGELAMENTO ESTAVA AQUI: A peça agora é trocada perfeitamente!
             if (!holdPeca) {
                 holdPeca = player.matrix;
-                
                 const pieces = 'ILJOTSZ';
                 player.matrix = nextPeca;
                 nextPeca = createPiece(pieces[Math.floor(Math.random() * pieces.length)]);
-                
             } else {
-                let temp = player.matrix;
-                player.matrix = holdPeca;
-                holdPeca = temp;
+                let temp = player.matrix; player.matrix = holdPeca; holdPeca = temp;
             }
-            
-            player.pos.y = 0;
-            player.pos.x = Math.floor(12 / 2) - Math.floor(player.matrix[0].length / 2);
-            
-            canSwap = false;
-            dropCounter = 0;
-            lockDelayTime = 0;
-            
-            updateSidePanels();
-            updateGhost();
+            player.pos.y = 0; player.pos.x = Math.floor(12 / 2) - Math.floor(player.matrix[0].length / 2);
+            canSwap = false; dropCounter = 0; lockDelayTime = 0;
+            updateSidePanels(); updateGhost();
         }
 
-        /* =========================================
-           CONTROLES GERAIS E MENUS
-        ========================================= */
         function iniciarJogo() {
             if (jogoRodando) return;
             
-            for (let y = 0; y < arena.length; y++) {
-                arena[y].fill(0);
-            }
+            // Inicializa o som no primeiro clique do usuário para o navegador não bloquear
+            initAudio();
             
-            score = 0; 
-            level = 1; 
-            updateScore();
+            for (let y = 0; y < arena.length; y++) arena[y].fill(0);
+            score = 0; level = 1; updateScore();
             
             document.getElementById('start-screen').style.display = 'none';
             document.getElementById('pause-screen').style.display = 'none';
             document.getElementById('game-over-screen').style.display = 'none';
             
-            jogoRodando = true; 
-            jogoPausado = false;
-            
+            jogoRodando = true; jogoPausado = false;
             resetPlayer(); 
-            
-            if (animationId !== null) {
-                cancelAnimationFrame(animationId);
-            }
+            if (animationId !== null) cancelAnimationFrame(animationId);
             update();
         }
 
         function reiniciarPosGameOver() {
             document.getElementById('game-over-screen').style.display = 'none';
-            jogoRodando = false; 
-            iniciarJogo();
+            jogoRodando = false; iniciarJogo();
         }
 
         function togglePause() {
             const gameOverAberto = document.getElementById('game-over-screen').style.display === 'flex';
             const cardAberto = document.getElementById('memory-card-overlay').style.display === 'flex';
-            
             if (!jogoRodando || gameOverAberto || cardAberto) return;
             
             jogoPausado = !jogoPausado;
@@ -1036,43 +736,13 @@
         /* =========================================
            GERENCIADORES DE EVENTOS
         ========================================= */
-        // Áudio inicialização segura
-        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-        function tocarSom(tipo) {
-            try {
-                if (audioCtx.state === 'suspended') return;
-                const osc = audioCtx.createOscillator();
-                const gain = audioCtx.createGain();
-                osc.connect(gain); gain.connect(audioCtx.destination);
-                
-                if (tipo === 'move') {
-                    osc.type = 'sine'; osc.frequency.setValueAtTime(400, audioCtx.currentTime); gain.gain.setValueAtTime(0.05, audioCtx.currentTime); osc.start(); osc.stop(audioCtx.currentTime + 0.05);
-                } else if (tipo === 'drop') {
-                    osc.type = 'triangle'; osc.frequency.setValueAtTime(150, audioCtx.currentTime); gain.gain.setValueAtTime(0.1, audioCtx.currentTime); osc.start(); osc.stop(audioCtx.currentTime + 0.1);
-                } else if (tipo === 'combo') {
-                    osc.type = 'sine'; osc.frequency.setValueAtTime(800, audioCtx.currentTime); gain.gain.setValueAtTime(0.1, audioCtx.currentTime); osc.start(); osc.stop(audioCtx.currentTime + 0.3);
-                }
-            } catch(e) {}
-        }
-
-        function vibrar(padrao) { 
-            try { if (navigator.vibrate) navigator.vibrate(padrao); } catch(e) {}
-        }
-
         document.addEventListener('keydown', e => {
             if (e.keyCode === 27 || e.keyCode === 80) togglePause();
             if (!jogoRodando || jogoPausado) return;
             
             if (e.keyCode === 37) playerMove(-1);
             else if (e.keyCode === 39) playerMove(1);
-            else if (e.keyCode === 40) {
-                player.pos.y++; 
-                if (collide(arena, player)) {
-                    player.pos.y--; 
-                } else {
-                    lockDelayTime = 0; 
-                }
-            } 
+            else if (e.keyCode === 40) { player.pos.y++; if (collide(arena, player)) player.pos.y--; else lockDelayTime = 0; } 
             else if (e.keyCode === 38) playerRotate();
             else if (e.keyCode === 32) { e.preventDefault(); playerHardDrop(); }
             else if (e.keyCode === 67 || e.keyCode === 16) playerHold();
@@ -1083,38 +753,23 @@
         document.addEventListener('touchstart', e => {
             const alvo = e.target;
             if (alvo.closest('.side-gallery') || alvo.closest('button') || alvo.closest('.polaroid') || alvo.closest('iframe')) return;
-            
-            touchX = e.touches[0].clientX; 
-            touchY = e.touches[0].clientY;
-            touchStartTime = Date.now(); 
-            horizontalMove = false;
+            touchX = e.touches[0].clientX; touchY = e.touches[0].clientY; touchStartTime = Date.now(); horizontalMove = false;
         }, { passive: false });
 
         document.addEventListener('touchmove', e => {
             const alvo = e.target;
             if (!jogoRodando || jogoPausado || alvo.closest('.side-gallery') || alvo.closest('button') || alvo.closest('.polaroid') || alvo.closest('iframe')) return;
-            
             e.preventDefault();
-            
-            const dx = e.touches[0].clientX - touchX;
-            const dy = e.touches[0].clientY - touchY;
-            
+            const dx = e.touches[0].clientX - touchX; const dy = e.touches[0].clientY - touchY;
             if (Math.abs(dx) > 25 && Math.abs(dx) > Math.abs(dy)) {
-                playerMove(dx > 0 ? 1 : -1);
-                touchX = e.touches[0].clientX; 
-                touchY = e.touches[0].clientY;
-                horizontalMove = true;
+                playerMove(dx > 0 ? 1 : -1); touchX = e.touches[0].clientX; touchY = e.touches[0].clientY; horizontalMove = true;
             }
         }, { passive: false });
 
         document.addEventListener('touchend', e => {
             const alvo = e.target;
             if (!jogoRodando || jogoPausado || alvo.closest('.side-gallery') || alvo.closest('button') || alvo.closest('.polaroid') || alvo.closest('iframe')) return;
-            
-            const dy = e.changedTouches[0].clientY - touchY;
-            const dx = e.changedTouches[0].clientX - touchX;
-            const dt = Date.now() - touchStartTime;
-            
+            const dy = e.changedTouches[0].clientY - touchY; const dx = e.changedTouches[0].clientX - touchX; const dt = Date.now() - touchStartTime;
             if (!horizontalMove) {
                 if (dt < 250 && Math.abs(dx) < 10 && Math.abs(dy) < 10) playerRotate();
                 else if (dy > 50) playerHardDrop();
@@ -1122,7 +777,6 @@
             }
         });
 
-        // Executa ao Carregar a tela para organizar as memórias
         renderThumbs();
     </script>
 </body>
