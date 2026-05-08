@@ -354,19 +354,33 @@
         } catch (e) { }
 
         /* =========================================
-           SISTEMA DE ÁUDIO MELHORADO
+           SISTEMA DE ÁUDIO MELHORADO (MOBILE FIX)
         ========================================= */
         let audioCtx;
         let somAtivado = true;
+        let audioUnlocked = false;
 
-        // Inicia/Destrava o som de forma segura
+        // Inicia/Destrava o som de forma segura no Mobile
         function initAudio() {
             try {
                 if (!audioCtx) {
-                    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                    const AudioContext = window.AudioContext || window.webkitAudioContext;
+                    audioCtx = new AudioContext();
                 }
                 if (audioCtx.state === 'suspended') {
                     audioCtx.resume();
+                }
+                
+                // Hack para liberar o som no celular (Safari/Chrome) no 1º clique
+                if (!audioUnlocked) {
+                    const osc = audioCtx.createOscillator();
+                    const gain = audioCtx.createGain();
+                    gain.gain.value = 0; // Toca mudo
+                    osc.connect(gain);
+                    gain.connect(audioCtx.destination);
+                    osc.start(audioCtx.currentTime);
+                    osc.stop(audioCtx.currentTime + 0.001);
+                    audioUnlocked = true;
                 }
             } catch(e) { console.error("Erro ao iniciar áudio:", e); }
         }
