@@ -354,21 +354,29 @@
         } catch (e) { }
 
         /* =========================================
-           SISTEMA DE ÁUDIO (COM BOTÃO MUTE)
+           SISTEMA DE ÁUDIO MELHORADO
         ========================================= */
         let audioCtx;
         let somAtivado = true;
 
+        // Inicia/Destrava o som de forma segura
         function initAudio() {
-            if (!audioCtx) {
-                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-            }
-            if (audioCtx.state === 'suspended') {
-                audioCtx.resume();
-            }
+            try {
+                if (!audioCtx) {
+                    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                }
+                if (audioCtx.state === 'suspended') {
+                    audioCtx.resume();
+                }
+            } catch(e) { console.error("Erro ao iniciar áudio:", e); }
         }
 
+        // Adiciona destravador de áudio no primeiro toque na tela para o mobile liberar
+        document.body.addEventListener('touchstart', initAudio, { once: true });
+        document.body.addEventListener('click', initAudio, { once: true });
+
         function toggleSom() {
+            initAudio(); // Tenta destravar caso seja o primeiro clique
             somAtivado = !somAtivado;
             const btn = document.getElementById('btn-som');
             btn.innerText = somAtivado ? '🔊' : '🔇';
@@ -378,22 +386,61 @@
             if (!somAtivado || !audioCtx) return;
             try {
                 if (audioCtx.state === 'suspended') audioCtx.resume();
+                
                 const osc = audioCtx.createOscillator();
                 const gain = audioCtx.createGain();
                 osc.connect(gain); gain.connect(audioCtx.destination);
                 
+                const now = audioCtx.currentTime;
+                
                 if (tipo === 'move') {
-                    osc.type = 'sine'; osc.frequency.setValueAtTime(400, audioCtx.currentTime); 
-                    gain.gain.setValueAtTime(0.05, audioCtx.currentTime); 
-                    osc.start(); osc.stop(audioCtx.currentTime + 0.05);
-                } else if (tipo === 'drop') {
-                    osc.type = 'triangle'; osc.frequency.setValueAtTime(150, audioCtx.currentTime); 
-                    gain.gain.setValueAtTime(0.1, audioCtx.currentTime); 
-                    osc.start(); osc.stop(audioCtx.currentTime + 0.1);
-                } else if (tipo === 'combo') {
-                    osc.type = 'sine'; osc.frequency.setValueAtTime(800, audioCtx.currentTime); 
-                    gain.gain.setValueAtTime(0.1, audioCtx.currentTime); 
-                    osc.start(); osc.stop(audioCtx.currentTime + 0.3);
+                    osc.type = 'sine'; osc.frequency.setValueAtTime(300, now); 
+                    gain.gain.setValueAtTime(0.05, now); 
+                    osc.start(now); osc.stop(now + 0.05);
+                } 
+                else if (tipo === 'rotate') {
+                    osc.type = 'sine'; osc.frequency.setValueAtTime(450, now); 
+                    gain.gain.setValueAtTime(0.05, now); 
+                    osc.start(now); osc.stop(now + 0.05);
+                }
+                else if (tipo === 'drop') {
+                    osc.type = 'triangle'; osc.frequency.setValueAtTime(150, now); 
+                    osc.frequency.exponentialRampToValueAtTime(50, now + 0.1);
+                    gain.gain.setValueAtTime(0.1, now); 
+                    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.1);
+                    osc.start(now); osc.stop(now + 0.1);
+                } 
+                else if (tipo === 'hold') {
+                    osc.type = 'sine'; osc.frequency.setValueAtTime(200, now); 
+                    osc.frequency.linearRampToValueAtTime(400, now + 0.1);
+                    gain.gain.setValueAtTime(0.05, now); 
+                    osc.start(now); osc.stop(now + 0.1);
+                }
+                else if (tipo === 'clear') {
+                    osc.type = 'square'; osc.frequency.setValueAtTime(600, now); 
+                    osc.frequency.linearRampToValueAtTime(800, now + 0.1);
+                    gain.gain.setValueAtTime(0.05, now); 
+                    osc.start(now); osc.stop(now + 0.1);
+                }
+                else if (tipo === 'combo') {
+                    osc.type = 'square'; osc.frequency.setValueAtTime(800, now); 
+                    osc.frequency.linearRampToValueAtTime(1200, now + 0.2);
+                    gain.gain.setValueAtTime(0.05, now); 
+                    osc.start(now); osc.stop(now + 0.2);
+                }
+                else if (tipo === 'levelUp') {
+                    osc.type = 'sine'; osc.frequency.setValueAtTime(400, now); 
+                    osc.frequency.setValueAtTime(600, now + 0.1);
+                    osc.frequency.setValueAtTime(800, now + 0.2);
+                    gain.gain.setValueAtTime(0.1, now); 
+                    osc.start(now); osc.stop(now + 0.3);
+                }
+                else if (tipo === 'gameover') {
+                    osc.type = 'sawtooth'; osc.frequency.setValueAtTime(300, now); 
+                    osc.frequency.exponentialRampToValueAtTime(50, now + 0.5);
+                    gain.gain.setValueAtTime(0.1, now); 
+                    gain.gain.linearRampToValueAtTime(0.01, now + 0.5);
+                    osc.start(now); osc.stop(now + 0.5);
                 }
             } catch(e) {}
         }
@@ -475,6 +522,7 @@
             updateGhost();
 
             if (collide(arena, player)) {
+                tocarSom('gameover');
                 jogoRodando = false; 
                 jogoPausado = true;
                 document.getElementById('final-score').innerText = score;
@@ -529,7 +577,7 @@
                         });
                     }
                 }
-                if (linesCleared === 1) { tocarSom('move'); vibrar([50]); } 
+                if (linesCleared === 1) { tocarSom('clear'); vibrar([50]); } 
                 else if (linesCleared === 2) { vibrar([50, 50, 100]); mostrarCombo("Arranjo Lindo! 🌸"); } 
                 else if (linesCleared === 3) { vibrar([50, 100, 150]); mostrarCombo("Buquê Perfeito! 💐"); } 
                 else if (linesCleared >= 4) { vibrar([100, 100, 200]); mostrarCombo("Jardim Extraordinário! 🌺"); }
@@ -556,6 +604,7 @@
             
             let newLevel = Math.floor(score / 50) + 1;
             if (newLevel !== level) {
+                tocarSom('levelUp');
                 level = newLevel;
                 document.getElementById('level').innerText = level;
                 document.body.className = ''; 
@@ -712,7 +761,8 @@
         ========================================= */
         function playerMove(dir) {
             player.pos.x += dir;
-            if (collide(arena, player)) player.pos.x -= dir; else { lockDelayTime = 0; updateGhost(); }
+            if (collide(arena, player)) player.pos.x -= dir; 
+            else { lockDelayTime = 0; updateGhost(); tocarSom('move'); }
         }
 
         function playerRotate() {
@@ -722,7 +772,7 @@
                 if (offset > player.matrix[0].length) { rotate(player.matrix, -1); player.pos.x = pos; return; }
                 failsafe++;
             }
-            lockDelayTime = 0; updateGhost();
+            lockDelayTime = 0; updateGhost(); tocarSom('rotate');
         }
 
         function playerHardDrop() {
@@ -743,13 +793,12 @@
             }
             player.pos.y = 0; player.pos.x = Math.floor(12 / 2) - Math.floor(player.matrix[0].length / 2);
             canSwap = false; dropCounter = 0; lockDelayTime = 0;
-            updateSidePanels(); updateGhost();
+            updateSidePanels(); updateGhost(); tocarSom('hold');
         }
 
         function iniciarJogo() {
             if (jogoRodando) return;
             
-            // Inicializa o som no primeiro clique do usuário para o navegador não bloquear
             initAudio();
             
             for (let y = 0; y < arena.length; y++) arena[y].fill(0);
