@@ -107,6 +107,8 @@
             max-height: 48vh; width: auto; aspect-ratio: 3 / 5;
         }
 
+        /* Classes para esconder texto e desenhar borda (Webkit stroke) no Canvas Emojis */
+
         .shake-anim { animation: shake 0.2s both; }
         @keyframes shake { 0% { transform: translate(1px, 1px); } 50% { transform: translate(-2px, 2px); } 100% { transform: translate(0, 0); } }
 
@@ -178,6 +180,7 @@
 </head>
 <body class="level-1">
 
+    <!-- Tela Inicial -->
     <div id="start-screen" class="overlay-screen" style="display: flex;">
         <h1 style="color: #fff; font-size: 38px; text-shadow: 0 4px 10px rgba(0,0,0,0.1); text-align: center; margin-bottom: 20px;">
             Jardim da Emilly 🌸
@@ -188,6 +191,7 @@
         <button class="btn-start" onclick="iniciarJogo()">Começar Partida</button>
     </div>
 
+    <!-- Tela de Pausa -->
     <div id="pause-screen" class="overlay-screen">
         <div class="overlay-card">
             <h2 id="overlay-title" style="color: #ff6b81; margin-top: 0;">Jogo Pausado ⏸️</h2>
@@ -195,6 +199,7 @@
         </div>
     </div>
 
+    <!-- Tela de Fim de Jogo -->
     <div id="game-over-screen" class="overlay-screen">
         <div class="overlay-card">
             <h2 style="color: #ff6b81; margin-top: 0;">Fim de Jogo! 🥀</h2>
@@ -203,9 +208,11 @@
         </div>
     </div>
 
+    <!-- Botões Superiores -->
     <button class="btn-top btn-sound" id="btn-som" onclick="toggleSom()">🔊</button>
     <button class="btn-top btn-pause" onclick="togglePause()">⏸️</button>
 
+    <!-- Overlay do Polaroid Card -->
     <div id="memory-card-overlay" onclick="fecharCard(event)">
         <div class="polaroid" id="polaroid-obj" onclick="event.stopPropagation(); this.classList.toggle('flipped')">
             <div class="polaroid-inner">
@@ -220,6 +227,7 @@
         </div>
     </div>
 
+    <!-- Cabeçalho Principal -->
     <div class="header">
         <div class="info-box" id="caixa-hold">
             <div class="info-title">Guardada</div>
@@ -237,7 +245,9 @@
         </div>
     </div>
 
+    <!-- Tabuleiro e Galeria Lateral -->
     <div class="game-container">
+        <!-- Coluna Esquerda -->
         <div class="side-gallery" id="gal-left">
             <div class="photo-thumb locked" id="thumb-1" onclick="abrirCard(0)">?</div>
             <div class="photo-thumb locked" id="thumb-3" onclick="abrirCard(2)">?</div>
@@ -247,6 +257,7 @@
 
         <canvas id="tetris" width="240" height="400"></canvas>
 
+        <!-- Coluna Direita -->
         <div class="side-gallery" id="gal-right">
             <div class="photo-thumb locked" id="thumb-2" onclick="abrirCard(1)">?</div>
             <div class="photo-thumb locked" id="thumb-4" onclick="abrirCard(3)">?</div>
@@ -257,6 +268,7 @@
 
     <div id="gesture-hint">👆 Girar | ↔️ Mover | ⏬ Plantar | ⏫ Guardar</div>
 
+    <!-- Botão de Acelerar Queda (Soft Drop) -->
     <button class="btn-soft-drop" id="btn-soft-drop" 
         onmousedown="isSoftDropping = true" 
         onmouseup="isSoftDropping = false" 
@@ -326,9 +338,11 @@
         let dropCounter = 0;
         let lastTime = 0;
         let lockDelayTime = 0; 
-        const LOCK_DELAY = 400; 
+        const LOCK_DELAY = 500; // Aumentado para 500ms (dá mais tempo para pensar quando bate no chão)
         let ghostY = 0;
         let animationId = null;
+
+        // Variavel do Soft Drop (Botão de acelerar a peça)
         let isSoftDropping = false;
 
         let recorde = 0;
@@ -338,7 +352,7 @@
         } catch (e) { }
 
         /* =========================================
-           SISTEMA DE ÁUDIO (MUITO MAIS ALTO)
+           SISTEMA DE ÁUDIO MELHORADO
         ========================================= */
         let audioCtx;
         let somAtivado = true;
@@ -388,7 +402,6 @@
                 
                 const now = audioCtx.currentTime;
                 
-                // Volume dos sons absurdamente aumentados para o celular (de 0.05 para até 0.5)
                 if (tipo === 'move') {
                     osc.type = 'sine'; osc.frequency.setValueAtTime(300, now); 
                     gain.gain.setValueAtTime(0.3, now); 
@@ -557,7 +570,8 @@
                     arena.unshift(row);
                     yLinhas.push(y);
                     y++; 
-                    score += rowCount * 10;
+                    // Pontuação dobrada para facilitar os unlocks!
+                    score += rowCount * 20; 
                     rowCount *= 2;
                     linesCleared++;
                 }
@@ -659,7 +673,7 @@
         }
 
         /* =========================================
-           RENDERIZAÇÃO VISUAL (COM FLORES MELHORADAS)
+           RENDERIZAÇÃO
         ========================================= */
         function drawMatrix(ctx, matrix, offset, isGhost = false) {
             if (!matrix) return;
@@ -675,11 +689,22 @@
                             ctx.fillStyle = 'rgba(255,255,255,0.4)'; ctx.fillRect(x + offset.x + gap, y + offset.y + gap, 0.9, 0.15); ctx.fillRect(x + offset.x + gap, y + offset.y + gap, 0.15, 0.9);
                             ctx.fillStyle = 'rgba(0,0,0,0.2)'; ctx.fillRect(x + offset.x + gap, y + offset.y + 0.9 - 0.1 + gap, 0.9, 0.15); ctx.fillRect(x + offset.x + 0.9 - 0.1 + gap, y + offset.y + gap, 0.15, 0.9);
                             
-                            // Adicionando as flores nos blocos de forma clara para o celular ler o Emoji!
+                            // Aumentei o emoji e adicionei contorno (stroke) para destacar muito mais!
                             if (plants[val]) { 
-                                ctx.font = '0.8px "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji", sans-serif'; 
+                                ctx.font = '0.75px "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji", sans-serif'; 
                                 ctx.textAlign = 'center'; 
                                 ctx.textBaseline = 'middle'; 
+                                
+                                // Simula um stroke leve no emoji desenhando-o 4 vezes deslocado
+                                ctx.fillStyle = 'rgba(0,0,0,0.4)';
+                                const offsetStroke = 0.02;
+                                ctx.fillText(plants[val], x + offset.x + 0.5 + offsetStroke, y + offset.y + 0.55);
+                                ctx.fillText(plants[val], x + offset.x + 0.5 - offsetStroke, y + offset.y + 0.55);
+                                ctx.fillText(plants[val], x + offset.x + 0.5, y + offset.y + 0.55 + offsetStroke);
+                                ctx.fillText(plants[val], x + offset.x + 0.5, y + offset.y + 0.55 - offsetStroke);
+
+                                // Desenha o Emoji principal por cima
+                                ctx.fillStyle = '#FFFFFF'; // Reset
                                 ctx.fillText(plants[val], x + offset.x + 0.5, y + offset.y + 0.55); 
                             }
                         }
@@ -730,15 +755,24 @@
             
             const deltaTime = time - lastTime; lastTime = time; dropCounter += deltaTime;
             
-            let interval = Math.max(150, 1000 - (level * 100));
-            if (isSoftDropping) interval = 30; 
+            // Controle de velocidade Suavizado (Mais fácil)
+            // Base inicial mais lenta (1200ms) e reduz menos a cada level (50ms em vez de 100ms)
+            let interval = Math.max(250, 1200 - (level * 50));
+            
+            if (isSoftDropping) {
+                interval = 30; // ⚡ Acelera a peça se estiver segurando o botão
+            }
             
             if (dropCounter > interval) {
                 player.pos.y++;
                 if (collide(arena, player)) {
                     player.pos.y--; 
-                    if(isSoftDropping) lockDelayTime = LOCK_DELAY; 
-                } else lockDelayTime = 0; 
+                    if(isSoftDropping) {
+                        lockDelayTime = LOCK_DELAY; // Cola mais rápido se estiver acelerando
+                    }
+                } else {
+                    lockDelayTime = 0; 
+                }
                 dropCounter = 0;
             }
             
@@ -872,6 +906,3 @@
     </script>
 </body>
 </html>
-
-
-```
