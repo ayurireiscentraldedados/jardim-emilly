@@ -107,8 +107,6 @@
             max-height: 48vh; width: auto; aspect-ratio: 3 / 5;
         }
 
-        /* Classes para esconder texto e desenhar borda (Webkit stroke) no Canvas Emojis */
-
         .shake-anim { animation: shake 0.2s both; }
         @keyframes shake { 0% { transform: translate(1px, 1px); } 50% { transform: translate(-2px, 2px); } 100% { transform: translate(0, 0); } }
 
@@ -338,11 +336,10 @@
         let dropCounter = 0;
         let lastTime = 0;
         let lockDelayTime = 0; 
-        const LOCK_DELAY = 500; // Aumentado para 500ms (dá mais tempo para pensar quando bate no chão)
+        const LOCK_DELAY = 500; 
         let ghostY = 0;
         let animationId = null;
 
-        // Variavel do Soft Drop (Botão de acelerar a peça)
         let isSoftDropping = false;
 
         let recorde = 0;
@@ -570,7 +567,6 @@
                     arena.unshift(row);
                     yLinhas.push(y);
                     y++; 
-                    // Pontuação dobrada para facilitar os unlocks!
                     score += rowCount * 20; 
                     rowCount *= 2;
                     linesCleared++;
@@ -612,7 +608,10 @@
                 document.getElementById('high-score').innerText = recorde;
             }
             
-            let newLevel = Math.floor(score / 50) + 1;
+            // CURVA DE DIFICULDADE SUAVIZADA
+            // Agora sobe de nível a cada 80 pontos (antes era 50)
+            let newLevel = Math.floor(score / 80) + 1;
+            
             if (newLevel !== level) {
                 tocarSom('levelUp');
                 level = newLevel;
@@ -673,7 +672,7 @@
         }
 
         /* =========================================
-           RENDERIZAÇÃO
+           RENDERIZAÇÃO VISUAL
         ========================================= */
         function drawMatrix(ctx, matrix, offset, isGhost = false) {
             if (!matrix) return;
@@ -689,13 +688,11 @@
                             ctx.fillStyle = 'rgba(255,255,255,0.4)'; ctx.fillRect(x + offset.x + gap, y + offset.y + gap, 0.9, 0.15); ctx.fillRect(x + offset.x + gap, y + offset.y + gap, 0.15, 0.9);
                             ctx.fillStyle = 'rgba(0,0,0,0.2)'; ctx.fillRect(x + offset.x + gap, y + offset.y + 0.9 - 0.1 + gap, 0.9, 0.15); ctx.fillRect(x + offset.x + 0.9 - 0.1 + gap, y + offset.y + gap, 0.15, 0.9);
                             
-                            // Aumentei o emoji e adicionei contorno (stroke) para destacar muito mais!
                             if (plants[val]) { 
                                 ctx.font = '0.75px "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji", sans-serif'; 
                                 ctx.textAlign = 'center'; 
                                 ctx.textBaseline = 'middle'; 
                                 
-                                // Simula um stroke leve no emoji desenhando-o 4 vezes deslocado
                                 ctx.fillStyle = 'rgba(0,0,0,0.4)';
                                 const offsetStroke = 0.02;
                                 ctx.fillText(plants[val], x + offset.x + 0.5 + offsetStroke, y + offset.y + 0.55);
@@ -703,8 +700,7 @@
                                 ctx.fillText(plants[val], x + offset.x + 0.5, y + offset.y + 0.55 + offsetStroke);
                                 ctx.fillText(plants[val], x + offset.x + 0.5, y + offset.y + 0.55 - offsetStroke);
 
-                                // Desenha o Emoji principal por cima
-                                ctx.fillStyle = '#FFFFFF'; // Reset
+                                ctx.fillStyle = '#FFFFFF';
                                 ctx.fillText(plants[val], x + offset.x + 0.5, y + offset.y + 0.55); 
                             }
                         }
@@ -755,9 +751,9 @@
             
             const deltaTime = time - lastTime; lastTime = time; dropCounter += deltaTime;
             
-            // Controle de velocidade Suavizado (Mais fácil)
-            // Base inicial mais lenta (1200ms) e reduz menos a cada level (50ms em vez de 100ms)
-            let interval = Math.max(250, 1200 - (level * 50));
+            // Controle de velocidade com o Soft Drop e Limite Máximo de Dificuldade
+            // Reduz apenas 35ms por nível (antes era 50ms) e o limite de velocidade humana é de 350ms
+            let interval = Math.max(350, 1100 - (level * 35));
             
             if (isSoftDropping) {
                 interval = 30; // ⚡ Acelera a peça se estiver segurando o botão
@@ -768,7 +764,7 @@
                 if (collide(arena, player)) {
                     player.pos.y--; 
                     if(isSoftDropping) {
-                        lockDelayTime = LOCK_DELAY; // Cola mais rápido se estiver acelerando
+                        lockDelayTime = LOCK_DELAY;
                     }
                 } else {
                     lockDelayTime = 0; 
